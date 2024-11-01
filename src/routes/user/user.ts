@@ -31,6 +31,7 @@ export async function userRoutes(app: FastifyInstance) {
       await prisma.user.create({
         data: {
           username,
+          sessionId,
         },
       })
 

@@ -11,6 +11,8 @@ model User {
   id       String @id @default(cuid())
   username String
 
+  sessionId String? @unique
+
   meals Meal[] @relation("UserMeals")
 
   @@map("users")
@@ -21,7 +23,6 @@ model Meal {
   name        String
   description String
   date        DateTime
-  hours       DateTime
   isDiet      Boolean
 
   userId String
