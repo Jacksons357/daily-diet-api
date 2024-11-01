@@ -1,11 +1,12 @@
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
-import z, { ZodType } from 'zod'
+import z from 'zod'
 import prisma from '../../lib/prisma'
+import { randomUUID } from 'node:crypto'
 
-export async function user(app: FastifyInstance) {
+export async function userRoutes(app: FastifyInstance) {
   app.withTypeProvider<ZodTypeProvider>().post(
-    '/user',
+    '/',
     {
       schema: {
         body: z.object({
@@ -16,13 +17,24 @@ export async function user(app: FastifyInstance) {
     async (request, reply) => {
       const { username } = request.body
 
+      let sessionId = request.cookies.sessionId
+
+      if (!sessionId) {
+        sessionId = randomUUID()
+
+        reply.cookie('sessionId', sessionId, {
+          path: '/',
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+        })
+      }
+
       await prisma.user.create({
         data: {
           username,
         },
       })
 
-      return reply.status(200).send()
+      return reply.status(200).send('User created')
     }
   )
 
@@ -33,7 +45,7 @@ export async function user(app: FastifyInstance) {
   })
 
   app.withTypeProvider<ZodTypeProvider>().delete(
-    '/user/:id',
+    '/:id',
     {
       schema: {
         params: z.object({
@@ -54,12 +66,12 @@ export async function user(app: FastifyInstance) {
         },
       })
 
-      return reply.status(200).send()
+      return reply.status(200).send('User deleted')
     }
   )
 
   app.withTypeProvider<ZodTypeProvider>().put(
-    '/user/:id',
+    '/:id',
     {
       schema: {
         params: z.object({
@@ -81,7 +93,7 @@ export async function user(app: FastifyInstance) {
         },
       })
 
-      return reply.status(200).send()
+      return reply.status(200).send('Updated user')
     }
   )
 }
