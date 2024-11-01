@@ -3,7 +3,7 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod'
-import { user } from './routes/user'
+import { user } from './routes/user/user'
 
 export const app = fastify()
 
