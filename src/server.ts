@@ -5,8 +5,8 @@ import {
 } from 'fastify-type-provider-zod'
 import { userRoutes } from './routes/user/user'
 import cookie from '@fastify/cookie'
-import { checkSessionIdExists } from './middlewares/check-session-id-exists'
 import { mealsRoutes } from './routes/meals/meals'
+import { metricsRoutes } from './routes/metrics/metrics'
 
 export const app = fastify()
 
@@ -21,6 +21,10 @@ app.register(userRoutes, {
 
 app.register(mealsRoutes, {
   prefix: 'meals',
+})
+
+app.register(metricsRoutes, {
+  prefix: 'metrics',
 })
 
 app.listen({ port: 3333 }).then(() => {
